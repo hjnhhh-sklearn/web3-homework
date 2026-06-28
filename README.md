@@ -1,2 +1,2 @@
 # web3-homework
-homeword of learning web three
+homework for web three
