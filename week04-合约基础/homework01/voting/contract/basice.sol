@@ -1,61 +1,11 @@
-# 1、Voting合约
+// SPDX-License-Identifier: SEE LICENSE IN LICENSE
+pragma solidity ^0.8.24;
 
-```solidity
-contract Voting {
-
-    mapping (address => uint256) public voteMap;
-    address[] public candidates;
-    address public owner;
-
-    constructor() {
-        owner = msg.sender;
-    }
-	
-	// 投票
-    function vote(address candidate) external {
-        require(candidate != address(0), "address can not be zero!");
-        if (voteMap[candidate] == 0) {
-            voteMap[candidate] = 1;
-            candidates.push(candidate);
-        }else {
-            voteMap[candidate] += 1;
-        }
-    }
-
-	// 根据地址获取投票数
-    function getVotes(address candidate) external view returns (uint256) {
-        require(candidate != address(0), "address can not be zero!");
-        return voteMap[candidate];
-    }
-
-	// 重置投票，要记得删除candidates数组，避免后续重复push
-    function resetVotes() external onlyOwner{
-        uint256 len = candidates.length;
-        for(uint256 i = 0; i < len; i++){
-            address addr = candidates[i];
-            voteMap[addr] = 0;
-        }
-        delete candidates;
-    }
-
-    modifier onlyOwner {
-        require(msg.sender == owner, "only owner can do this option");
-        _;
-    }
-
-}
-```
-
-![image-20260628154537069](assets/image-20260628154537069.png) 
-
-![image-20260628154648933](assets/image-20260628154648933.png) 
-
-# 2、反转字符串
-
-```solidity
+// 反转字符串
 contract ReverseString {
-    function reverse(string memory str) public pure returns (string memory) {
+    function reverse(string memory str) public returns (bytes memory) {
         bytes memory strBytes = bytes(str);
+        uint256 left = 0;
         uint256 right = strBytes.length - 1;
         return string(toReverse(strBytes, 0, right));
     }
@@ -64,8 +14,8 @@ contract ReverseString {
         bytes memory strBytes,
         uint256 left,
         uint256 right
-    ) public pure returns (bytes memory) {
-        while (left <= right) {
+    ) public returns (bytes memory) {
+        while (left != right) {
             bytes1 temp = strBytes[left];
             strBytes[left] = strBytes[right];
             strBytes[right] = temp;
@@ -75,15 +25,7 @@ contract ReverseString {
         return strBytes;
     }
 }
-```
 
-![image-20260628154140831](assets/image-20260628154140831.png) 
-
-# 3、实现罗马数字转整数
-
-⭐️：solidity中，二维数组声明顺序和读取顺序不一致，声明是`[列][行]`，读取是`[行][列]`
-
-```solidity
 // 整数转罗马
 contract IntToRoman {
     // 构造罗马字符映射表，比如3689要转成罗马数字，依次对千、百、十、个位数字获取到相应的字符拼接即可
@@ -105,15 +47,7 @@ contract IntToRoman {
         return string.concat(part1, part2, part3, part4);
     }
 }
-```
 
-![image-20260628173726524](assets/image-20260628173726524.png) 
-
-
-
-# 4、罗马转整数
-
-```solidity
 // 罗马转整数
 contract RomanToInt {
     // MMMCMXCIX
@@ -124,7 +58,7 @@ contract RomanToInt {
         bytes memory strBytes = bytes(str);
         int256[] memory nums = new int256[](strBytes.length);
 
-        for (uint i = 0; i < strBytes.length; i++) {
+        for (int i = 0; i < strBytes.length; i++) {
             if (strBytes[i] == bytes1("M")) {
                 nums[i] = 1000;
             } else if (strBytes[i] == bytes1("D")) {
@@ -146,7 +80,7 @@ contract RomanToInt {
 
         // 判断nums，用int256做中间计算，防止向下溢出
         int256 sum = 0;
-        for (uint256 i = 0; i < nums.length - 1; i++) {
+        for (int256 i = 0; i < nums.length - 1; i++) {
             if (nums[i] < nums[i + 1]) {
                 sum = sum - nums[i];
             } else {
@@ -156,15 +90,7 @@ contract RomanToInt {
         return sum + nums[nums.length - 1];
     }
 }
-```
 
-![image-20260628180329335](assets/image-20260628180329335.png) 
-
-
-
-# 5、合并2个有序数组
-
-```solidity
 // 合并2个有序数组
 contract MergeSort {
     function toMerge(
@@ -200,33 +126,25 @@ contract MergeSort {
         return help;
     }
 }
-```
 
-![image-20260628213741638](assets/image-20260628213741638.png) 
-
-
-
-# 6、二分查找
-
-```solidity
-contract BinarySearch{
-
-    function binarySearch(int[] memory nums, int target) external pure returns(int){
+// 二分查找
+contract BinarySearch {
+    function binarySearch(
+        int[] memory nums,
+        int target
+    ) external pure returns (int) {
         uint left = 0;
-        uint right = nums.length-1;
-        while(left <= right){
-            uint mid = uint(left + (right-left)/2);
-            if (nums[mid] < target){
-                left = mid+1;
-            }else if (nums[mid] > target){
-                right = mid-1;
-            }else{
+        uint right = nums.length - 1;
+        while (left <= right) {
+            uint mid = uint(left + (right - left) / 2);
+            if (nums[mid] < target) {
+                left = mid + 1;
+            } else if (nums[mid] > target) {
+                right = mid - 1;
+            } else {
                 return int(mid);
             }
         }
         return -1;
     }
 }
-```
-
-![image-20260628214819581](assets/image-20260628214819581.png) 
