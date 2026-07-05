@@ -1,0 +1,18 @@
+# Node modules（任意位置）
+**/node_modules/
+
+# Hardhat 构建产物（任意子项目）
+**/artifacts/
+**/cache/
+**/types/
+**/coverage/
+**/.coverage/
+
+# 编译输出
+**/dist/
+**/bundle/
+
+# 环境变量
+**/.env-enc
+**/.env.*
+**/.claude/
